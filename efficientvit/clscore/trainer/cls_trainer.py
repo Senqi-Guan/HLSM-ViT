@@ -72,13 +72,11 @@ class ClsTrainer(Trainer):
                     )
                     t.update()
 
-        if (epoch + 1) >= 314:  # 当epoch+1大于等于317时保存模型
+        if (epoch + 1) >= 314:
             try:
-                # 保存路径包含epoch编号，确保每个epoch的模型权重文件唯一
                 save_path = f'./checkpoints/{epoch}.pt'
                 torch.save(model.state_dict(), save_path)
                 print(f"Model saved as {save_path}")
-                # 移除了sys.exit(0)，程序会继续运行
             except Exception as e:
                 print(f"Error saving model: {e}")
 
@@ -133,7 +131,6 @@ class ClsTrainer(Trainer):
             ema_output = None
 
         with torch.autocast(device_type="cuda", dtype=torch.float16, enabled=self.fp16):
-        # with torch.autocast(device_type="cuda", dtype=torch.float16, enabled=True):    
             output = self.model(images)
             loss = self.train_criterion(output, labels)
             # mesa loss
@@ -208,8 +205,6 @@ class ClsTrainer(Trainer):
             self.train_criterion = nn.CrossEntropyLoss()
 
         for epoch in range(self.start_epoch, self.run_config.n_epochs + self.run_config.warmup_epochs):
-            # target_value = 78.75 #去掉sample
-
             train_info_dict = self.train_one_epoch(epoch)
             # eval
             val_info_dict = self.multires_validate(epoch=epoch)
